@@ -1,5 +1,6 @@
 #include "spu.h"
 #include <cstdio>
+#include<cstdlib>
 
 int main(const int argc, char * argv[])
 {
@@ -7,6 +8,8 @@ int main(const int argc, char * argv[])
     case 1:
     {
         SPU program = {};
+        program.RAM = (double *)calloc(sizeOfRAM, sizeof(double));
+
         FILE * inputFile = fopen("program.obj", "r");
 
         if (!inputFile) {
@@ -21,11 +24,15 @@ int main(const int argc, char * argv[])
 
         fclose(inputFile);
 
+        free(program.RAM);
+
         return 0;
     }
     case 2:
     {
         SPU program = {};
+        program.RAM = (double *)calloc(sizeOfRAM, sizeof(double));
+
         FILE * inputFile = fopen(argv[1], "r");
 
         if (!inputFile) {
@@ -37,6 +44,8 @@ int main(const int argc, char * argv[])
         spuReadData(inputFile, &program);
 
         spuRun(&program);
+
+        free(program.RAM);
 
         fclose(inputFile);
 

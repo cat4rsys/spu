@@ -9,10 +9,13 @@ void spuRun(SPU * program)
 {
     Stack stk = {};
     Stack funcStack = {};
-
-    stk.logFile = fopen("logfile.htm", "w");
+#ifdef DEBUG
+    stk.logFile = fopen("main_logfile.htm", "w");
     logInit(stk.logFile);
 
+    funcStack.logFile = fopen("func_logfile.htm", "w");
+    logInit(funcStack.logFile);
+#endif // DEBUG
     double * data = program->data;
 
     DO_STACK_CTOR(&stk, 50);
@@ -359,6 +362,9 @@ void spuRun(SPU * program)
             }
         }
     }
+
+    DO_STACK_DTOR(&stk);
+    DO_STACK_DTOR(&funcStack);
 }
 
 void spuReadSizeOfData(FILE * inputFile, SPU * program)

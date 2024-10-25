@@ -1,5 +1,7 @@
 #include <cstdio>
 
+const int sizeOfRAM = 30000;
+
 typedef struct
 {
     double * data;
@@ -7,7 +9,7 @@ typedef struct
 
     double registers[8];
 
-    double RAM[30000];
+    double * RAM;
 } SPU;
 
 enum BinaryCommands {                     // 5 bit for id command. max 32

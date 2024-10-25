@@ -35,8 +35,7 @@ void spuReadLabels(SPU * data, File text)
     for (int i = 0; i < text.numOfLines; i++) {
         InfoAboutLine thisLine = (*(text.arrayOfInfoAboutLines[i]));
         if (thisLine.pointerOfBeginning[thisLine.lenghtOfLine - 1] == ':') {
-            printf("%s\n", thisLine.pointerOfBeginning);
-            createNewLabel(data, thisLine.pointerOfBeginning, ip, thisLine.lenghtOfLine - 1);
+            createNewLabel(data, thisLine.pointerOfBeginning, ip, (int) thisLine.lenghtOfLine - 1);
         }
         else if (strstr(thisLine.pointerOfBeginning, "push")) ip += 2;
         else if (strstr(thisLine.pointerOfBeginning, "pop")) ip += 2;
@@ -48,6 +47,7 @@ void spuReadLabels(SPU * data, File text)
         else if (strstr(thisLine.pointerOfBeginning, "je")) ip += 2;
         else if (strstr(thisLine.pointerOfBeginning, "jne")) ip += 2;
         else if (strstr(thisLine.pointerOfBeginning, "call")) ip += 2;
+        else if (*thisLine.pointerOfBeginning == '\0') { ip += 0; printf("HUY\n"); }
         else ip += 1;
     }
 }
@@ -61,10 +61,6 @@ void spuAssemble(FILE * inputFile, FILE * outputFile, SPU * data)
 
     size_t size = data->size;
     char cmd[15] = {};
-    double number = 0;
-    char * pointer = 0;
-
-    //fprintf(outputFile, "CODE CMD   ARG  \n");
 
     for (size_t i = 0; i < size; i++) {
         fscanf(inputFile, "%s", cmd);
@@ -289,17 +285,11 @@ BinaryAttributes checkArgument(const char * line)
         else return REG;
     }
 }
-/*
-void printHeader(FILE * outputFile)
-{
-    fprintf(outputFile, "cat4rsys\n1.0\n");
-}
-*/
 
 void printRamNum(FILE * outputFile, char * line)
 {
     char * buf = strdup(line + 1);
-    int lenght = strlen(buf);
+    size_t lenght = strlen(buf);
 
     strncpy(line, buf, lenght);
 
@@ -309,7 +299,7 @@ void printRamNum(FILE * outputFile, char * line)
 void printRamReg(FILE * outputFile, char * line)
 {
     char * buf = strdup(line + 1);
-    int lenght = strlen(buf);
+    size_t lenght = strlen(buf);
 
     strncpy(line, buf, lenght-1);
     line[lenght-1] = '\0';
@@ -356,7 +346,6 @@ void createNewLabel(SPU * data, char * name, int index, int lenght)
     char buf[maxLenghtOfLine] = {};
     strncpy(buf, name, lenght);
     buf[lenght] = '\0';
-    printf("%s\n", buf);
 
     if (pointer) {
         if ( !strcmp( buf, (*pointer).name ) ) {
@@ -385,7 +374,17 @@ void createNewLabel(SPU * data, char * name, int index, int lenght)
         data->firstLabel->index = index;
         data->firstLabel->name = strdup(buf);
         data->firstLabel->nextLabel = NULL;
-
-        printf("\n\n%s\n", data->firstLabel->name);
     }
+}
+
+void closeLabels(Label * label)
+{
+    if (label->nextLabel == NULL) {
+        free(label);
+        return;
+    }
+
+    closeLabels(label->nextLabel);
+    free(label);
+    return;
 }

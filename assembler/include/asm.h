@@ -73,4 +73,6 @@ void printRamNum(FILE * outputFile, char * line);
 
 void printRamReg(FILE * outputFile, char * line);
 
+void closeLabels(Label * label);
+
 #endif // ASM_H
