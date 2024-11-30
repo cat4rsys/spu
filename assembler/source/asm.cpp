@@ -47,7 +47,7 @@ void spuReadLabels(SPU * data, File text)
         else if (strstr(thisLine.pointerOfBeginning, "je")) ip += 2;
         else if (strstr(thisLine.pointerOfBeginning, "jne")) ip += 2;
         else if (strstr(thisLine.pointerOfBeginning, "call")) ip += 2;
-        else if (*thisLine.pointerOfBeginning == '\0') { ip += 0; printf("HUY\n"); }
+        else if (*thisLine.pointerOfBeginning == '\0') ip += 0;
         else ip += 1;
     }
 }
