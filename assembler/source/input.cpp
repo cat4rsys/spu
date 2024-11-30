@@ -32,7 +32,7 @@ void divisionLines(File * allFile)
     allFile->numOfLines = 1;
 
     for (int currentFilePos = 0; currentFilePos < allFile->numOfElements; currentFilePos++) {
-        if ( *(allFile->str + currentFilePos) == '\r' ) {
+        if ( *(allFile->str + currentFilePos) == '\n' ) {
             *(allFile->str + currentFilePos) = '\0';
             allFile->numOfLines++;
         }
@@ -51,7 +51,7 @@ void readPointersOfLines(File * allFile)
     int readedLines = 1;
 
     for (int currentFilePos = 0; currentFilePos < allFile->numOfElements; currentFilePos++) {
-        if ( *(allFile->str + currentFilePos) == '\n' ) {
+        if ( *(allFile->str + currentFilePos) == '\0' ) {
             arrayOfLines[readedLines].pointerOfBeginning = allFile->str + currentFilePos + 1;
             allFile->arrayOfInfoAboutLines[readedLines] = &(arrayOfLines[readedLines]);
 
@@ -60,18 +60,10 @@ void readPointersOfLines(File * allFile)
 
             readedLines += 1;
 
-            if (readedLines == allFile->numOfLines) {
+            /*if (readedLines == allFile->numOfLines) {
                 currentFilePos = allFile->numOfElements;
-            }
+            }*/
         }
-    }
-
-    if ( *( (allFile->str) + (allFile->numOfElements - 2) ) == '\n' ) {
-        allFile->numOfLines -= 1;
-    }
-    else {
-        arrayOfLines[readedLines - 1].lenghtOfLine = arrayOfLines[0].pointerOfBeginning + allFile->numOfElements -
-                                                     arrayOfLines[readedLines - 1].pointerOfBeginning - 1;
     }
 }
 

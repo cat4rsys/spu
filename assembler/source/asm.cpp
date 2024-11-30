@@ -34,20 +34,20 @@ void spuReadLabels(SPU * data, File text)
 
     for (int i = 0; i < text.numOfLines; i++) {
         InfoAboutLine thisLine = (*(text.arrayOfInfoAboutLines[i]));
-        if (thisLine.pointerOfBeginning[thisLine.lenghtOfLine - 1] == ':') {
-            createNewLabel(data, thisLine.pointerOfBeginning, ip, (int) thisLine.lenghtOfLine - 1);
+        if (thisLine.pointerOfBeginning[thisLine.lenghtOfLine] == ':') {
+            createNewLabel(data, thisLine.pointerOfBeginning, ip, (int) thisLine.lenghtOfLine);
         }
         else if (strstr(thisLine.pointerOfBeginning, "push")) ip += 2;
-        else if (strstr(thisLine.pointerOfBeginning, "pop")) ip += 2;
-        else if (strstr(thisLine.pointerOfBeginning, "jmp")) ip += 2;
-        else if (strstr(thisLine.pointerOfBeginning, "ja")) ip += 2;
-        else if (strstr(thisLine.pointerOfBeginning, "jae")) ip += 2;
-        else if (strstr(thisLine.pointerOfBeginning, "jb")) ip += 2;
-        else if (strstr(thisLine.pointerOfBeginning, "jbe")) ip += 2;
-        else if (strstr(thisLine.pointerOfBeginning, "je")) ip += 2;
-        else if (strstr(thisLine.pointerOfBeginning, "jne")) ip += 2;
+        else if (strstr(thisLine.pointerOfBeginning, "pop"))  ip += 2;
+        else if (strstr(thisLine.pointerOfBeginning, "jmp"))  ip += 2;
+        else if (strstr(thisLine.pointerOfBeginning, "ja"))   ip += 2;
+        else if (strstr(thisLine.pointerOfBeginning, "jae"))  ip += 2;
+        else if (strstr(thisLine.pointerOfBeginning, "jb"))   ip += 2;
+        else if (strstr(thisLine.pointerOfBeginning, "jbe"))  ip += 2;
+        else if (strstr(thisLine.pointerOfBeginning, "je"))   ip += 2;
+        else if (strstr(thisLine.pointerOfBeginning, "jne"))  ip += 2;
         else if (strstr(thisLine.pointerOfBeginning, "call")) ip += 2;
-        else if (*thisLine.pointerOfBeginning == '\0') ip += 0;
+        else if (*thisLine.pointerOfBeginning == '\0')        ip += 0;
         else ip += 1;
     }
 }
@@ -133,6 +133,7 @@ void spuAssemble(FILE * inputFile, FILE * outputFile, SPU * data)
             fprintf(outputFile, "%05d000 ", CMD_JMP);
 
             fscanf(inputFile, "%s", cmd);
+
             int ip = replaceLabel(data, cmd);
 
             if (ip == -1) break;
@@ -321,7 +322,7 @@ void printReg(FILE * outputFile, const char * line)
 }
 
 int replaceLabel(SPU * data, char * name)
-{
+{   
     Label * pointer = data->firstLabel;
 
     while ( (*pointer).nextLabel != NULL ) {
@@ -345,7 +346,6 @@ void createNewLabel(SPU * data, char * name, int index, int lenght)
     Label * pointer = data->firstLabel;
     char buf[maxLenghtOfLine] = {};
     strncpy(buf, name, lenght);
-    buf[lenght] = '\0';
 
     if (pointer) {
         if ( !strcmp( buf, (*pointer).name ) ) {

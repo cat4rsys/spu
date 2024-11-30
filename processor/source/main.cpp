@@ -53,6 +53,7 @@ int main(const int argc, char * argv[])
     }
     default:
     {
+                        // FAIL! Usage ...
         fprintf(stderr, "Incorrect input. You should write path to your *.asm file or just write \"spu\"\n");
 
         return -1;
